@@ -14,12 +14,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onListner()
         setContentView(R.layout.activity_main)
-
         Log.d(Constants.TAG,"MainActivity-onCreate() called")
-
-        //라디오그룹 가져오기
-        search_term_radio_group.setOnCheckedChangeListener{_,checkedId->
+        }
+        // 함수로!!
+        private fun onListner(){
+           //라디오그룹 가져오기
+           search_term_radio_group.setOnCheckedChangeListener{_,checkedId->
             when(checkedId){
                 R.id.photo_search_radio_btn->{
                     Log.d(Constants.TAG,"사진검색")
@@ -34,7 +36,6 @@ class MainActivity : AppCompatActivity() {
                     this.currentSearchTypes=SEARCH_TYPE.USER
                 }
             }
-
         }
     }
 
