@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.d(Constants.TAG,"MainActivity-onCreate() called")
+        Log.d(Constants.TAG,"MainActivity-onCreate() called~!!")
         val search_term_radio_group:RadioGroup=findViewById(R.id.search_term_radio_group)
         val search_term_text_layout:TextInputLayout=findViewById(R.id.search_term_text_layout)
 
