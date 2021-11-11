@@ -25,8 +25,7 @@
             android:id="@+id/search_term_radio_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/photo_search_radio_btn"
@@ -53,9 +52,9 @@
             android:hint="@string/search_term_hint"
             app:boxStrokeColor="@color/design_default_color_primary"
 
-            app:helperText="검색어를 입력해 주세요"
             app:counterEnabled="true"
             app:counterMaxLength="12"
+            app:helperText="검색어를 입력해 주세요"
 
             app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent"
             app:startIconDrawable="@drawable/ic_baseline_photo_library_24">
@@ -72,9 +71,9 @@
 
         <include
             layout="@layout/layout_button_search"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 </ScrollView>
