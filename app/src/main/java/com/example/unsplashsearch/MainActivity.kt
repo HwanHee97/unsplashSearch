@@ -2,10 +2,16 @@ package com.example.unsplashsearch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.RadioGroup
 import com.example.unsplashsearch.utils.Constants
 import com.example.unsplashsearch.utils.SEARCH_TYPE
+import com.example.unsplashsearch.utils.onMyTextChange
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 
@@ -21,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         Log.d(Constants.TAG,"MainActivity-onCreate() called~!!@@")
         val search_term_radio_group:RadioGroup=findViewById(R.id.search_term_radio_group)
         val search_term_text_layout:TextInputLayout=findViewById(R.id.search_term_text_layout)
+        val search_term_edit_text:TextInputEditText=findViewById(R.id.search_term_edit_text)
+        val frame_search_btn:FrameLayout=findViewById(R.id.frame_search_btn)
 
         //라디오그룹 가져오기
         search_term_radio_group.setOnCheckedChangeListener{_,checkedId->
@@ -38,9 +46,18 @@ class MainActivity : AppCompatActivity() {
                     this.currentSearchTypes= SEARCH_TYPE.USER
                 }
             }
-
+            Log.d(Constants.TAG,"setOnCheckedChange()called /currentSearchTypes:$currentSearchTypes")
         }
+        //텍스트가 변경될때
+        search_term_edit_text.onMyTextChange {
+            //입력된 글자가 있으면 검색버튼 보여쥼
+            if (it.toString().count()>0){
+                frame_search_btn.visibility= View.VISIBLE
+            }else{
+                frame_search_btn.visibility= View.INVISIBLE
+
+            }
+        }
+
     }
-
-
 }
