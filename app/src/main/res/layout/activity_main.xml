@@ -92,4 +92,4 @@ maxLength = 최대길이 12
 inputType 을 text로 함으로 한줄만 입력
 
 include 태그는 외부 레이아웃 코드 그대로 사용할수있다
-이 태그 안에서 latout변경하려면 layout_height,layout_width 를 설정해주면 됨됨->
+이 태그 안에서 latout변경하려면 layout_height,layout_width 를 설정해주면 됨됨-->
