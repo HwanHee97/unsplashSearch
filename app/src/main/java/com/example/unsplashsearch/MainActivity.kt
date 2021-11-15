@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout
 private lateinit var binding: ActivityMainBinding
 private lateinit var btn_progress: ProgressBar
 private lateinit var btn_search: Button
+private lateinit var frame_search_btn: FrameLayout
 
 class MainActivity : AppCompatActivity() {
     //검색할 타입을 미리 지정해놓은 enum클래스에서 가져옴  기본값은 PHOTO
@@ -31,29 +32,40 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
+        onBinding()//findViewByID는  setContentView()를해서 레이아웃이 존재할때만 리턴하기때문에 setContentView 아래 함수호출
+        onListner()
         Log.d(Constants.TAG, "MainActivity-onCreate() called~!!@@")
-//        val search_term_radio_group:RadioGroup=findViewById(R.id.search_term_radio_group)
-//        val search_term_text_layout:TextInputLayout=findViewById(R.id.search_term_text_layout)
-//        val search_term_edit_text:TextInputEditText=findViewById(R.id.search_term_edit_text)
-        val frame_search_btn: FrameLayout =
-            findViewById(R.id.frame_search_btn)//커스텀 레이아웃은 바인딩 불가해서 findViewById 사용
+
+    }//oncreate
+
+    private fun onBinding() {
+        frame_search_btn = findViewById(R.id.frame_search_btn)//커스텀 레이아웃은 바인딩 불가해서 findViewById 사용
         btn_search = findViewById(R.id.btn_search)//커스텀 레이아웃은 바인딩 불가해서 findViewById 사용
         btn_progress = findViewById(R.id.btn_progress)//커스텀 레이아웃은 바인딩 불가해서 findViewById 사용
+    }
 
+    private fun onListner() {
         //라디오그룹 가져오기
         binding.searchTermRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.photo_search_radio_btn -> {
                     Log.d(Constants.TAG, "사진검색")
-                    binding.searchTermTextLayout.hint = "사진검색"
-                    binding.searchTermTextLayout.startIconDrawable = resources.getDrawable(R.drawable.ic_baseline_photo_library_24, resources.newTheme())
+                    binding.searchTermTextLayout.apply {
+                        hint="사진검색"
+                        startIconDrawable = resources.getDrawable(R.drawable.ic_baseline_photo_library_24, resources.newTheme())
+                    }
+                    //binding.searchTermTextLayout.hint = "사진검색"
+                    //binding.searchTermTextLayout.startIconDrawable = resources.getDrawable(R.drawable.ic_baseline_photo_library_24, resources.newTheme())
                     this.currentSearchTypes = SEARCH_TYPE.PHOTO
                 }
                 R.id.user_search_radio_btn -> {
                     Log.d(Constants.TAG, "사용자 검색")
-                    binding.searchTermTextLayout.hint = "사용자 검색"
-                    binding.searchTermTextLayout.startIconDrawable = resources.getDrawable(R.drawable.ic_baseline_person_24, resources.newTheme())
+                    binding.searchTermTextLayout.apply {
+                        hint="사용자 검색"
+                        startIconDrawable = resources.getDrawable(R.drawable.ic_baseline_person_24, resources.newTheme())
+                    }
+                    //binding.searchTermTextLayout.hint = "사용자 검색"
+                    //binding.searchTermTextLayout.startIconDrawable = resources.getDrawable(R.drawable.ic_baseline_person_24, resources.newTheme())
                     this.currentSearchTypes = SEARCH_TYPE.USER
                 }
             }
@@ -80,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 currentSearchTypes:$currentSearchTypes")
             this.handleSearchButtonUi()
         }
-    }//oncreate
+    }
 
     private fun handleSearchButtonUi() {
         //btn_search.text=""
@@ -92,7 +104,6 @@ class MainActivity : AppCompatActivity() {
             //btn_search.text="검색"
             btn_search.visibility = View.VISIBLE
         }, 1500L)
-
-
     }
+
 }
