@@ -11,7 +11,9 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.unsplashsearch.databinding.ActivityMainBinding
+import com.example.unsplashsearch.retrofit.RetrofitManager
 import com.example.unsplashsearch.utils.Constants
+import com.example.unsplashsearch.utils.RESPONSE_STATE
 import com.example.unsplashsearch.utils.SEARCH_TYPE
 import com.example.unsplashsearch.utils.onMyTextChange
 import com.google.android.material.textfield.TextInputEditText
@@ -35,6 +37,9 @@ class MainActivity : AppCompatActivity() {
         onBinding()//findViewByID는  setContentView()를해서 레이아웃이 존재할때만 리턴하기때문에 setContentView 아래 함수호출
         onListner()
         Log.d(Constants.TAG, "MainActivity-onCreate() called~!!@@")
+
+
+
 
     }//oncreate
 
@@ -69,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                     this.currentSearchTypes = SEARCH_TYPE.USER
                 }
             }
-            Log.d(Constants.TAG, "setOnCheckedChange()called /currentSearchTypes:$currentSearchTypes")
+            Log.d(Constants.TAG, "MainActivity - setOnCheckedChange()called /currentSearchTypes:$currentSearchTypes")
         }
         //텍스트가 변경될때
         binding.searchTermEditText.onMyTextChange {
@@ -88,12 +93,28 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "검색하는 글자는 12자까지 입니다.", Toast.LENGTH_SHORT).show()
             }
         }
+        //버튼 클릭시
         btn_search.setOnClickListener {
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 currentSearchTypes:$currentSearchTypes")
+
+            RetrofitManager.instance.searchPhotos(searchTerm = binding.searchTermEditText.toString(),completion = {
+                    responseState, responseBody->
+                when(responseState){
+                    RESPONSE_STATE.OKAY->{
+                        Log.d(Constants.TAG, "MainActivity - api 호출 성공: $responseBody")
+                    }
+                    RESPONSE_STATE.FAIL->{
+                        Toast.makeText(this,"api 호출 실패: $responseBody",Toast.LENGTH_SHORT).show()
+                        Log.d(Constants.TAG, "MainActivity - api 호출 실패: $responseBody")
+
+                    }
+                }
+
+            })
             this.handleSearchButtonUi()
+
         }
     }
-
     private fun handleSearchButtonUi() {
         //btn_search.text=""
         btn_search.visibility = View.INVISIBLE
