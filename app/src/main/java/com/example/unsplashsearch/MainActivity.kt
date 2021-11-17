@@ -96,8 +96,11 @@ class MainActivity : AppCompatActivity() {
         //버튼 클릭시
         btn_search.setOnClickListener {
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 currentSearchTypes:$currentSearchTypes")
+            var searchText:String=binding.searchTermEditText.text.toString()
+            Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 searchText:$searchText")
 
-            RetrofitManager.instance.searchPhotos(searchTerm = binding.searchTermEditText.toString(),completion = {
+            //completion을 사용한 이유는 비동기 처리를 위함
+            RetrofitManager.instance.searchPhotos(searchTerm =searchText ,completion = {
                     responseState, responseBody->
                 when(responseState){
                     RESPONSE_STATE.OKAY->{
@@ -109,12 +112,11 @@ class MainActivity : AppCompatActivity() {
 
                     }
                 }
-
             })
             this.handleSearchButtonUi()
 
         }
-    }
+    }//end of onListner()
     private fun handleSearchButtonUi() {
         //btn_search.text=""
         btn_search.visibility = View.INVISIBLE

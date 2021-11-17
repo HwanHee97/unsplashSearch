@@ -1,6 +1,10 @@
 package com.example.unsplashsearch.retrofit
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
+import com.example.unsplashsearch.App
 import com.example.unsplashsearch.utils.API
 import com.example.unsplashsearch.utils.Constants
 import com.example.unsplashsearch.utils.isJsonArray
@@ -26,21 +30,21 @@ object RetrofitClient {
     fun getClient(baseUrl: String):Retrofit?{
         Log.d(Constants.TAG,"RetrofitClient-getClient() called")
 
-
         //okhttp 인스턴스 생성
         val client=OkHttpClient.Builder()
         //로그를 찍기 위해 로깅인터셉터 설정
         val loggingInterceptor=HttpLoggingInterceptor(object :HttpLoggingInterceptor.Logger{
             override fun log(message: String) {
+
                 Log.d(Constants.TAG,"RetrofitClient - log() called / message : $message")
                 when{
                     message.isJsonObject()-> {
                         Log.d(Constants.TAG, "RetrofitClient -message.isJsonObject!!")
-                        //Log.d(Constants.TAG, JSONObject(message).toString(4))//indentSpace=4는 들여쓰기하기
+                        Log.d(Constants.TAG, JSONObject(message).toString(4))//indentSpace=4는 들여쓰기하기
                     }
                     message.isJsonArray()-> {
                         Log.d(Constants.TAG, "RetrofitClient -message.isJsonArray!!")
-                        //Log.d(Constants.TAG, JSONObject(message).toString(4))//indentSpace=4는 들여쓰기하기
+                        Log.d(Constants.TAG, JSONObject(message).toString(4))//indentSpace=4는 들여쓰기하기
                     }
                     else->{
                         try {
@@ -56,6 +60,7 @@ object RetrofitClient {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         //위에서 생성한 로깅 인터셉터를 okhttp 클라이언트에 추가한다.
         client.addInterceptor(loggingInterceptor)
+
         //기본 파라미터 추가
         val baseParameterInterceptor:Interceptor=(object :Interceptor{
             override fun intercept(chain: Interceptor.Chain): Response {
@@ -65,7 +70,14 @@ object RetrofitClient {
                 //쿼리 파라메터 추가하기
                 val addedUrl=originalRequest.url.newBuilder().addQueryParameter("client_id",API.CLIENT_ID).build()
                 val finalRequest = originalRequest.newBuilder().url(addedUrl).method(originalRequest.method,originalRequest.body).build()
-                return  chain.proceed(finalRequest)
+
+                val response:Response = chain.proceed(finalRequest)
+                if (response.code!=200){
+                    Handler(Looper.getMainLooper()).post{//Toast메시지는 메인 ui스레드에서 작동헤야 함으로 핸들러로 Looper가져와서 동작시킨다
+                        Toast.makeText(App.instance,"${response.code}에러입니다.",Toast.LENGTH_SHORT).show()
+                    }
+                }
+                return response
             }
         })
         //위에서 생성한 기본 파라미터 인터셉터를 okhttp 클라이언트에 추가한다.
@@ -87,6 +99,6 @@ object RetrofitClient {
                 .build()//레트로핏 빌드할때 .옵션 들을 추가하고 가장 마지막에 .build()로 마무리
         }
         return retrofitClient
-    }
+    }// end of getClient()
 
 }

@@ -10,7 +10,7 @@ import retrofit2.Response
 
 class RetrofitManager {
     companion object {
-        //싱글턴이 적용되도록 선언
+        //싱글턴처럼 적용되도록 companion을 사용하여 선언
         val instance = RetrofitManager()
     }
 
@@ -27,13 +27,15 @@ class RetrofitManager {
 
         val call = iRetrofit?.searchPhotos(searchTerm = term).let { it } ?: return //값이 없으면 return한다.있으면 it return
         //val call = iRetrofit?.searchPhotos(searchTerm = term) ?: return//위 코드랑 같은 의미
-        call.enqueue(object :retrofit2.Callback<JsonElement>{
+        call.enqueue(object :retrofit2.Callback<JsonElement>{//enqueue로 비동기 통신 실행
             //응답성공시
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                //Log.d(Constants.TAG,"RetorfitManager-onResponse() called / response:")
-
                 Log.d(Constants.TAG,"RetorfitManager-onResponse() called / response: ${response.body()}")
-                completion(RESPONSE_STATE.OKAY,response.body().toString())
+                when(response.code()){//응답 코드기 200(정상)일떄만 completion을(메인 액티비티로) 보낸다. 정상이 아닌 반환코드가 통신 성공으로 뜰수 있음을 방지
+                    200->{
+                        completion(RESPONSE_STATE.OKAY,response.body().toString())
+                    }
+                }
             }
             //응답실패시
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
