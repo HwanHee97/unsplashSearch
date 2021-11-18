@@ -3,9 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/drawable-v24/rounded_bg_gray.xml" value="0.22685185185185186" />
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/drawable/ic_baseline_insert_photo_24.xml" value="0.24010416666666667" />
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/drawable/ic_baseline_photo_library_24.xml" value="0.24010416666666667" />
         <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/drawable/ic_unsplash.xml" value="0.1" />
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/drawable/rounded_bg_pink.xml" value="0.24010416666666667" />
         <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/layout/activity_photo_collection.xml" value="0.25" />
         <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/layout/layout_button_search.xml" value="0.1" />
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/layout/layout_photo_item.xml" value="0.22" />
+        <entry key="..\:/PROJECT/unsplashSearch/app/src/main/res/menu/top_app_bar.xml" value="0.22395833333333334" />
       </map>
     </option>
   </component>
