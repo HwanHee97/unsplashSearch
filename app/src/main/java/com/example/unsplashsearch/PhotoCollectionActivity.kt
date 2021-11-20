@@ -15,32 +15,39 @@ class PhotoCollectionActivity:AppCompatActivity() {
     //데이터
     private var photoList=ArrayList<Photo>()
 
-    //어답터
-    private lateinit var photoGridRecyclerViewAdapter: PhotoGridRecyclerViewAdapter
+    private val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {
+        PhotoGridRecyclerViewAdapter(photoList) //그냥 이런식으로 넘기는거 추천 
+    }
+  
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo_collection)
-        val my_photo_recycler_view = findViewById<RecyclerView>(R.id.my_photo_recycler_view)
-        val top_app_bar=findViewById<MaterialToolbar>(R.id.top_app_bar)
-        Log.d(Constants.TAG,"PhotoCollectionActivity - onCreate() called")
-
-        val bundle=intent.getBundleExtra("array_bundle")//번들 받아서 저장
-        val search_term = intent.getStringExtra("search_term")//받은 검색어 저장
-
-        top_app_bar.title=search_term//검색어를 앱바 제목에 표시
-
-        photoList= bundle?.getSerializable("photo_array_list") as ArrayList<Photo>//받은 번들안에있는 요청 결과를 photoList에 저장
-
-        Log.d(Constants.TAG,"PhotoCollectionActivity - onCreate() called / search_term : $search_term / photoList.count() : ${photoList.count()}")
-
-        this.photoGridRecyclerViewAdapter= PhotoGridRecyclerViewAdapter()
-        this.photoGridRecyclerViewAdapter.submitList(photoList)
-
-        my_photo_recycler_view.layoutManager=GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false)
-        my_photo_recycler_view.adapter=this.photoGridRecyclerViewAdapter
-
-
-
+        getIntent()
+        setBinding()
+        setRecyclerview()
     }// end of onCreate()
 
+    private fun getIntent(){
+        if (intent.hasExtra("array_bundle")){
+            val bundle=intent.getBundleExtra("array_bundle")//번들 받아서 저장
+            photoList= bundle?.getSerializable("photo_array_list") as ArrayList<Photo>//받은 번들안에있는 요청 결과를 photoList에 저장
+        }
+        if (intent.hasExtra("array_bundle")){
+            val search_term = intent.getStringExtra("search_term")//받은 검색어 저장
+        }      
+    }
+    
+    private fun setBinding(){
+        val my_photo_recycler_view = findViewById<RecyclerView>(R.id.my_photo_recycler_view)
+        val top_app_bar=findViewById<MaterialToolbar>(R.id.top_app_bar)
+        top_app_bar.title=search_term//검색어를 앱바 제목에 표시
+    }
+    
+    private fun setRecyclerview(){
+        my_photo_recycler_view.apply{
+            layoutManager=GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false)
+            adapter=this.photoGridRecyclerViewAdapter
+        }
+    }
+   
 }
