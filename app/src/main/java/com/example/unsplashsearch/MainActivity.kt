@@ -1,24 +1,19 @@
 package com.example.unsplashsearch
 
 import android.content.Intent
-import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.unsplashsearch.databinding.ActivityMainBinding
 import com.example.unsplashsearch.retrofit.RetrofitManager
 import com.example.unsplashsearch.utils.Constants
-import com.example.unsplashsearch.utils.RESPONSE_STATE
+import com.example.unsplashsearch.utils.RESPONSE_STATUS
 import com.example.unsplashsearch.utils.SEARCH_TYPE
 import com.example.unsplashsearch.utils.onMyTextChange
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 
 private lateinit var binding: ActivityMainBinding
@@ -102,6 +97,9 @@ class MainActivity : AppCompatActivity() {
         //버튼 클릭시 리스너 달기
         btn_search.setOnClickListener {
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 currentSearchTypes:$currentSearchTypes")
+
+            this.handleSearchButtonUi()
+
             var searchText:String=binding.searchTermEditText.text.toString()
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 searchText:$searchText")
 
@@ -109,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             RetrofitManager.instance.searchPhotos(searchTerm =searchText ,completion = {
                     responseState, responseDataArrayList->
                 when(responseState){
-                    RESPONSE_STATE.OKAY->{
+                    RESPONSE_STATUS.OKAY->{
                         Log.d(Constants.TAG, "MainActivity - api 호출 성공: ${responseDataArrayList?.size}")
 
                         //PhotoCollectionActivity로 결과를 인텐트를 통해 전달 하기
@@ -122,28 +120,29 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
 
-                    RESPONSE_STATE.FAIL->{
+                    RESPONSE_STATUS.FAIL->{
                         Toast.makeText(this,"api 호출 실패: $responseDataArrayList",Toast.LENGTH_SHORT).show()
                         Log.d(Constants.TAG, "MainActivity - api 호출 실패: $responseDataArrayList")
                     }
+                    RESPONSE_STATUS.NO_CONTENT->{
+                        Toast.makeText(this,"검색 결과가 없습니다.",Toast.LENGTH_SHORT).show()
+                        Log.d(Constants.TAG, "MainActivity - 검색 결과가 없습니다.")
+                    }
                 }
+                btn_progress.visibility = View.INVISIBLE
+                btn_search.visibility = View.VISIBLE
+                binding.searchTermEditText.setText("")
             })
-            this.handleSearchButtonUi()
         }
 
     }//end of onListner()
 
-    //버큰클릭시 프로그래스바 표시 핸들러
+    //버큰클릭시 프로그래스바 표시
     private fun handleSearchButtonUi() {
-        //btn_search.text=""
+
         btn_search.visibility = View.INVISIBLE
         btn_progress.visibility = View.VISIBLE
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            btn_progress.visibility = View.INVISIBLE
-            //btn_search.text="검색"
-            btn_search.visibility = View.VISIBLE
-        }, 1500L)
     }
 
 }
