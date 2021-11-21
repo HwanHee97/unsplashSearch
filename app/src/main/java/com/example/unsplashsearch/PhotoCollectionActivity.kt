@@ -1,46 +1,53 @@
 package com.example.unsplashsearch
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.unsplashsearch.databinding.ActivityPhotoCollectionBinding
 import com.example.unsplashsearch.model.Photo
 import com.example.unsplashsearch.recyclerview.PhotoGridRecyclerViewAdapter
 import com.example.unsplashsearch.utils.Constants
-import com.google.android.material.appbar.MaterialToolbar
 
+private lateinit var binding: ActivityPhotoCollectionBinding
 class PhotoCollectionActivity:AppCompatActivity() {
     //데이터
     private var photoList=ArrayList<Photo>()
-
     //어답터
-    private lateinit var photoGridRecyclerViewAdapter: PhotoGridRecyclerViewAdapter
+    //private lateinit var photoGridRecyclerViewAdapter: PhotoGridRecyclerViewAdapter
+    private val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {
+        PhotoGridRecyclerViewAdapter(photoList) //선언과 동시에 초기화
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_photo_collection)
-        val my_photo_recycler_view = findViewById<RecyclerView>(R.id.my_photo_recycler_view)
-        val top_app_bar=findViewById<MaterialToolbar>(R.id.top_app_bar)
+        setBinding()
+//      setContentView(R.layout.activity_photo_collection)
+        setContentView(binding.root)
         Log.d(Constants.TAG,"PhotoCollectionActivity - onCreate() called")
+        getIntents()
+        setRecyclerView()
+    }// end of onCreate()
 
+    fun getIntents(){
         val bundle=intent.getBundleExtra("array_bundle")//번들 받아서 저장
         val search_term = intent.getStringExtra("search_term")//받은 검색어 저장
-
-        top_app_bar.title=search_term//검색어를 앱바 제목에 표시
-
+        binding.topAppBar.title=search_term//검색어를 앱바 제목에 표시
         photoList= bundle?.getSerializable("photo_array_list") as ArrayList<Photo>//받은 번들안에있는 요청 결과를 photoList에 저장
+        Log.d(Constants.TAG,"PhotoCollectionActivity - getIntents() called / search_term : $search_term / photoList.count() : ${photoList.count()}")
+    }
+    fun setBinding(){
+        Log.d(Constants.TAG,"PhotoCollectionActivity - setBinding() called ")
+        binding = ActivityPhotoCollectionBinding.inflate(layoutInflater)
+    }
+    fun setRecyclerView(){
+//        this.photoGridRecyclerViewAdapter= PhotoGridRecyclerViewAdapter(photoList)
+//        this.photoGridRecyclerViewAdapter.submitList(photoList)
+        binding.myPhotoRecyclerView.apply {
+            layoutManager=GridLayoutManager(this.context,2,GridLayoutManager.VERTICAL,false)
+            adapter=photoGridRecyclerViewAdapter
+        }
+    }
 
-        Log.d(Constants.TAG,"PhotoCollectionActivity - onCreate() called / search_term : $search_term / photoList.count() : ${photoList.count()}")
 
-        this.photoGridRecyclerViewAdapter= PhotoGridRecyclerViewAdapter()
-        this.photoGridRecyclerViewAdapter.submitList(photoList)
-
-        my_photo_recycler_view.layoutManager=GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false)
-        my_photo_recycler_view.adapter=this.photoGridRecyclerViewAdapter
-
-
-
-    }// end of onCreate()
 
 }

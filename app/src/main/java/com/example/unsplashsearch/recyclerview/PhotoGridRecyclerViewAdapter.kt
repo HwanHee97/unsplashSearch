@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.unsplashsearch.R
 import com.example.unsplashsearch.model.Photo
 
-class PhotoGridRecyclerViewAdapter :RecyclerView.Adapter<PhotoItemViewHolder>() {
-    private var photoList =ArrayList<Photo>()
+class PhotoGridRecyclerViewAdapter(var photoList: ArrayList<Photo>) :RecyclerView.Adapter<PhotoItemViewHolder>() {
+//    private var photoList =ArrayList<Photo>()
+//    init {
+//        this.photoList=photoList
+//    }
     //뷰홀더와 레이아웃 연결
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoItemViewHolder {
 
