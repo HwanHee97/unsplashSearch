@@ -2,23 +2,21 @@ package com.example.unsplashsearch.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unsplashsearch.R
+import com.example.unsplashsearch.databinding.ActivityPhotoCollectionBinding
+import com.example.unsplashsearch.databinding.LayoutPhotoItemBinding
 import com.example.unsplashsearch.model.Photo
 
 class PhotoGridRecyclerViewAdapter(var photoList: ArrayList<Photo>) :RecyclerView.Adapter<PhotoItemViewHolder>() {
-//    private var photoList =ArrayList<Photo>()
-//    init {
-//        this.photoList=photoList
-//    }
+
     //뷰홀더와 레이아웃 연결
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoItemViewHolder {
 
-        val photoItemViewHolder = PhotoItemViewHolder(LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.layout_photo_item,parent,false))
+        val binding = LayoutPhotoItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
 
-        return photoItemViewHolder
+        return PhotoItemViewHolder(binding)
     }
     //뷰홀더에 있는 바인드 함수 호출, 포토 리스트값 하나씩 전달
     override fun onBindViewHolder(holder: PhotoItemViewHolder, position: Int) {

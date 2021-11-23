@@ -5,23 +5,23 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.unsplashsearch.databinding.ActivityPhotoCollectionBinding
+import com.example.unsplashsearch.databinding.LayoutPhotoItemBinding
 import com.example.unsplashsearch.model.Photo
 import com.example.unsplashsearch.recyclerview.PhotoGridRecyclerViewAdapter
 import com.example.unsplashsearch.utils.Constants
 
 private lateinit var binding: ActivityPhotoCollectionBinding
+
 class PhotoCollectionActivity:AppCompatActivity() {
     //데이터
     private var photoList=ArrayList<Photo>()
     //어답터
-    //private lateinit var photoGridRecyclerViewAdapter: PhotoGridRecyclerViewAdapter
     private val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {
         PhotoGridRecyclerViewAdapter(photoList) //선언과 동시에 초기화
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
-//      setContentView(R.layout.activity_photo_collection)
         setContentView(binding.root)
         Log.d(Constants.TAG,"PhotoCollectionActivity - onCreate() called")
         getIntents()
@@ -40,8 +40,6 @@ class PhotoCollectionActivity:AppCompatActivity() {
         binding = ActivityPhotoCollectionBinding.inflate(layoutInflater)
     }
     fun setRecyclerView(){
-//        this.photoGridRecyclerViewAdapter= PhotoGridRecyclerViewAdapter(photoList)
-//        this.photoGridRecyclerViewAdapter.submitList(photoList)
         binding.myPhotoRecyclerView.apply {
             layoutManager=GridLayoutManager(this.context,2,GridLayoutManager.VERTICAL,false)
             adapter=photoGridRecyclerViewAdapter
