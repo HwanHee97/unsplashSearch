@@ -1,8 +1,14 @@
 package com.example.unsplashsearch.utils
 
+import android.content.Context
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import androidx.core.content.ContextCompat.startActivity
+import com.example.unsplashsearch.PhotoCollectionActivity
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 
 //문자열이 json 형태인지
 fun String?.isJsonObject():Boolean{
@@ -36,7 +42,12 @@ fun EditText.onMyTextChange(completion:(Editable?)->Unit){
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
         }
-
     })
-
 }
+fun start(context: Context?, searchText: String? = null, bundle: Bundle) =
+    context?.startActivity(
+        context.intentFor<PhotoCollectionActivity>(
+            "search_term" to searchText,
+            "array_bundle" to bundle
+        ).newTask()
+    )
