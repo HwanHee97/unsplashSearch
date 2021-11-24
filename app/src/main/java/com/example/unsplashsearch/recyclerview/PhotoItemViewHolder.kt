@@ -34,7 +34,6 @@ class PhotoItemViewHolder(val binding:LayoutPhotoItemBinding ) :RecyclerView.Vie
             .load(imageUrl)//표시할 이미지 값(링크).
             .placeholder(R.drawable.ic_baseline_insert_photo_24)//이미지가 없으면 나오는 기본 화면
             .into(view)//표시할 이미지 뷰
-
     }
 
 }

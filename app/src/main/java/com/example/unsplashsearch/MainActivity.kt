@@ -1,25 +1,31 @@
 package com.example.unsplashsearch
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Contacts
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.unsplashsearch.databinding.ActivityMainBinding
 import com.example.unsplashsearch.retrofit.RetrofitManager
-import com.example.unsplashsearch.utils.Constants
-import com.example.unsplashsearch.utils.RESPONSE_STATUS
-import com.example.unsplashsearch.utils.SEARCH_TYPE
-import com.example.unsplashsearch.utils.onMyTextChange
+import com.example.unsplashsearch.utils.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
+import java.lang.Exception
 
 
 private lateinit var binding: ActivityMainBinding
 private lateinit var btn_progress: ProgressBar
 private lateinit var btn_search: Button
 private lateinit var frame_search_btn: FrameLayout
+private lateinit var viewModel : MainViewModel
+private lateinit var searchText:String
 
 class MainActivity : AppCompatActivity() {
     //검색할 타입을 미리 지정해놓은 enum클래스에서 가져옴  기본값은 PHOTO
@@ -30,13 +36,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         onBinding()//findViewByID는  setContentView()를해서 레이아웃이 존재할때만 리턴하기때문에 setContentView 아래 함수호출
         onListner()
-
+        onObserve()
         Log.d(Constants.TAG, "MainActivity-onCreate() called~!!@@")
-
-
-
 
     }//oncreate()
 
@@ -47,7 +51,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onListner() {
-
         //라디오그룹 리스너 달기
         binding.searchTermRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -100,49 +103,37 @@ class MainActivity : AppCompatActivity() {
 
             this.handleSearchButtonUi()
 
-            var searchText:String=binding.searchTermEditText.text.toString()
+            searchText=binding.searchTermEditText.text.toString()
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 searchText:$searchText")
 
-            //completion을 사용한 이유는 비동기 처리를 위함
-            RetrofitManager.instance.searchPhotos(searchTerm =searchText ,completion = {
-                    responseState, responseDataArrayList->
-                when(responseState){
-                    RESPONSE_STATUS.OKAY->{
-                        Log.d(Constants.TAG, "MainActivity - api 호출 성공: ${responseDataArrayList?.size}")
+            viewModel.getPhotoData(searchText)
 
-                        //PhotoCollectionActivity로 결과를 인텐트를 통해 전달 하기
-                        //번들에 responseDataArrayList를 넣고, 인텐트에 번들을 넣어서 전달
-                        val intent=Intent(this,PhotoCollectionActivity::class.java)
-                        val bundle = Bundle()
-                        bundle.putSerializable("photo_array_list",responseDataArrayList)//Photo클래스에 Serializable선언해줘야 직렬화해서 값 전달가능
-                        intent.putExtra("array_bundle",bundle)
-                        intent.putExtra("search_term",searchText)
-                        startActivity(intent)
-                    }
+            btn_progress.visibility = View.INVISIBLE
+            btn_search.visibility = View.VISIBLE
+            binding.searchTermEditText.setText("")
 
-                    RESPONSE_STATUS.FAIL->{
-                        Toast.makeText(this,"api 호출 실패: $responseDataArrayList",Toast.LENGTH_SHORT).show()
-                        Log.d(Constants.TAG, "MainActivity - api 호출 실패: $responseDataArrayList")
-                    }
-                    RESPONSE_STATUS.NO_CONTENT->{
-                        Toast.makeText(this,"검색 결과가 없습니다.",Toast.LENGTH_SHORT).show()
-                        Log.d(Constants.TAG, "MainActivity - 검색 결과가 없습니다.")
-                    }
-                }
-                btn_progress.visibility = View.INVISIBLE
-                btn_search.visibility = View.VISIBLE
-                binding.searchTermEditText.setText("")
-            })
         }
-
     }//end of onListner()
+
+    fun onObserve(){
+        viewModel.photoList.observe(this, Observer {
+            //PhotoCollectionActivity로 결과를 인텐트를 통해 전달 하기
+            //번들에 responseDataArrayList를 넣고, 번들과 검색어를 미리 선언한 함수의 매개변수를 통해 새로운 액티비티 생성/Anko사용 코드라인수 감소
+            val bundle = Bundle()
+            bundle.putSerializable("photo_array_list",it)//Photo클래스에 Serializable선언해줘야 직렬화해서 값 전달가능
+            start(applicationContext, searchText,bundle)//utils.Extensions 파일에 선언된함수/새로운 액티비티 실행
+        })
+        viewModel.photoFailList.observe(this, Observer {
+            Toast.makeText(this,it, Toast.LENGTH_SHORT).show()
+        })
+    }
 
     //버큰클릭시 프로그래스바 표시
     private fun handleSearchButtonUi() {
-
         btn_search.visibility = View.INVISIBLE
         btn_progress.visibility = View.VISIBLE
 
     }
 
 }
+
