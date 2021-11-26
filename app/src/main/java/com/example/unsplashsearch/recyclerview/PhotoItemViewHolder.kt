@@ -21,7 +21,7 @@ class PhotoItemViewHolder(val binding:LayoutPhotoItemBinding ) :RecyclerView.Vie
 
     //데이터바인딩 사용하여 데이터를 넘김
     fun bindWithView(item:Photo){
-        Log.d(Constants.TAG,"PhotoItemViewHolder - bindWithView() called")
+        Log.d(Constants.TAG,"PhotoItemViewHolder - bindWithView() called/${item.thumbnail}")
             //이미지만을 위한 어댑터를  Photo클래스 안에 이미지 바인딩 어댑터함수를 따로 선언하고 xml파일에서 함수이름=@{이미지url} 을 선언히여 사용가능
             with(binding){
                 photoItem=item

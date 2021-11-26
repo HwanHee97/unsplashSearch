@@ -34,7 +34,7 @@ class RetrofitManager {
             //응답성공시
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
 
-                Log.d(Constants.TAG, "RetorfitManager-onResponse() called / response: ${response.body()}")
+                //Log.d(Constants.TAG, "RetorfitManager-onResponse() called / response: ${response.body()}")
                 when (response.code()) {//응답 코드기 200(정상)일떄만 completion을(메인 액티비티로) 보낸다. 정상이 아닌 반환코드가 통신 성공으로 뜰수 있음을 방지
                     200 -> {
                         response.body()?.let { //response.body()에 데이터가 있다면

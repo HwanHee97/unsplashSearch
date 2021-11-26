@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         onBinding()//findViewByID는  setContentView()를해서 레이아웃이 존재할때만 리턴하기때문에 setContentView 아래 함수호출
         onListner()
-        onObserve()
+        setObserve()
         Log.d(Constants.TAG, "MainActivity-onCreate() called~!!@@")
 
     }//oncreate()
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             searchText=binding.searchTermEditText.text.toString()
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 searchText:$searchText")
 
-            viewModel.getPhotoData(searchText)
+            viewModel.getPhotoData(searchText,"main")
 
             btn_progress.visibility = View.INVISIBLE
             btn_search.visibility = View.VISIBLE
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         }
     }//end of onListner()
 
-    fun onObserve(){
+    fun setObserve(){
         viewModel.photoList.observe(this, Observer {
             //PhotoCollectionActivity로 결과를 인텐트를 통해 전달 하기
             //번들에 responseDataArrayList를 넣고, 번들과 검색어를 미리 선언한 함수의 매개변수를 통해 새로운 액티비티 생성/Anko사용 코드라인수 감소

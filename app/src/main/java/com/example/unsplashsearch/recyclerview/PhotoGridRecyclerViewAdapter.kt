@@ -1,5 +1,6 @@
 package com.example.unsplashsearch.recyclerview
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -8,12 +9,13 @@ import com.example.unsplashsearch.R
 import com.example.unsplashsearch.databinding.ActivityPhotoCollectionBinding
 import com.example.unsplashsearch.databinding.LayoutPhotoItemBinding
 import com.example.unsplashsearch.model.Photo
+import com.example.unsplashsearch.utils.Constants
 
 class PhotoGridRecyclerViewAdapter(var photoList: ArrayList<Photo>) :RecyclerView.Adapter<PhotoItemViewHolder>() {
 
     //뷰홀더와 레이아웃 연결
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoItemViewHolder {
-
+        Log.d(Constants.TAG,"PhotoGridRecyclerViewAdapter - onCreateViewHolder() called")
         val binding = LayoutPhotoItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
 
         return PhotoItemViewHolder(binding)

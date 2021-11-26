@@ -20,6 +20,9 @@ class MainViewModel:ViewModel() {
      private var _photoList= MutableLiveData<ArrayList<Photo>>()
      val photoList:LiveData<ArrayList<Photo>>
           get() = _photoList
+     private var _changePhotoList= MutableLiveData<ArrayList<Photo>>()
+     val changePhotoList:LiveData<ArrayList<Photo>>
+          get() = _changePhotoList
      //실패시 전달할 문자
      private var _photoFailList= MutableLiveData<String>()
      val photoFailList:LiveData<String>
@@ -29,26 +32,47 @@ class MainViewModel:ViewModel() {
          Log.d(Constants.TAG,"MainViewModel - init()")
      }
 
-     fun getPhotoData(searchText:String){//viewModelScope는 뷰모델이 삭제되면 실행작업이 삭제 된다. 리소스 소모를 방지
-          viewModelScope.launch {
-               RetrofitManager.instance.searchPhotos(searchTerm =searchText ,completion = {//completion을 사용한 이유는 비동기 처리를 위함
-                         responseState, responseDataArrayList->
-                    when(responseState){
-                         RESPONSE_STATUS.OKAY->{
-                              Log.d(Constants.TAG, "MainActivity - api 호출 성공: ${responseDataArrayList?.size}")
-                              _photoList.value=responseDataArrayList
-                         }
-                         RESPONSE_STATUS.FAIL->{
-                              _photoFailList.value="api 호출실패"
-                              Log.d(Constants.TAG, "MainActivity - api 호출 실패: $responseDataArrayList")
-                         }
-                         RESPONSE_STATUS.NO_CONTENT->{
-                              _photoFailList.value="검색결과가 없습니다."
-                              Log.d(Constants.TAG, "MainActivity - 검색 결과가 없습니다.")
-                         }
+     fun getPhotoData(searchText:String,activity:String){//viewModelScope는 뷰모델이 삭제되면 실행작업이 삭제 된다. 리소스 소모를 방지
+          when(activity){
+               "main"->{
+                    viewModelScope.launch {
+                         RetrofitManager.instance.searchPhotos(searchTerm =searchText ,completion = {//completion을 사용한 이유는 비동기 처리를 위함
+                                   responseState, responseDataArrayList->
+                              when(responseState){
+                                   RESPONSE_STATUS.OKAY->{
+                                        Log.d(Constants.TAG, "MainActivity - api 호출 성공: ${responseDataArrayList?.size}")
+                                        _photoList.value=responseDataArrayList
+                                   }
+                                   RESPONSE_STATUS.FAIL->{
+                                        _photoFailList.value="api 호출실패"
+                                        Log.d(Constants.TAG, "MainActivity - api 호출 실패: $responseDataArrayList")
+                                   }
+                                   RESPONSE_STATUS.NO_CONTENT->{
+                                        _photoFailList.value="검색결과가 없습니다."
+                                        Log.d(Constants.TAG, "MainActivity - 검색 결과가 없습니다.")
+                                   }
+                              }
+                         })
                     }
-               })
+
+               }
+               "photo"->{
+                    viewModelScope.launch {
+                         RetrofitManager.instance.searchPhotos(searchTerm =searchText ,completion = {//completion을 사용한 이유는 비동기 처리를 위함
+                                   responseState, responseDataArrayList->
+                              when(responseState){
+                                   RESPONSE_STATUS.OKAY->{
+                                        Log.d(Constants.TAG, "MainActivity - api 호출 성공: ${responseDataArrayList?.size}")
+                                        _changePhotoList.value=responseDataArrayList
+                                   }
+                              }
+                         })
+                    }
+
+               }
           }
+
+
      }
 
 }
