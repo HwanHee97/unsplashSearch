@@ -33,6 +33,10 @@ class PhotoGridRecyclerViewAdapter(var photoList: ArrayList<Photo>) :RecyclerVie
     fun submitList(photoList: ArrayList<Photo>){
         this.photoList=photoList
     }
+    fun notifyPhotoDataChange(list:ArrayList<Photo>){
+        photoList=list
+        notifyDataSetChanged()
+    }
 
 
 }

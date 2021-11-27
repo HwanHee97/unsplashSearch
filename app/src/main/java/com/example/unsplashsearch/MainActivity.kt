@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         onListner()
         setObserve()
         Log.d(Constants.TAG, "MainActivity-onCreate() called~!!@@")
-
     }//oncreate()
 
     private fun onBinding() {
@@ -106,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             searchText=binding.searchTermEditText.text.toString()
             Log.d(Constants.TAG, "MainActivity-검색버튼 클릭 searchText:$searchText")
 
-            viewModel.getPhotoData(searchText,"main")
+            viewModel.getPhotoData(searchText)
 
             btn_progress.visibility = View.INVISIBLE
             btn_search.visibility = View.VISIBLE
