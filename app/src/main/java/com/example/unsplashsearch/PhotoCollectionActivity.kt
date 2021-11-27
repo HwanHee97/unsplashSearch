@@ -1,8 +1,17 @@
 package com.example.unsplashsearch
 
+import android.app.SearchManager
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.text.InputFilter
 import android.util.Log
+import android.view.Menu
+import android.widget.EditText
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.unsplashsearch.databinding.ActivityPhotoCollectionBinding
 import com.example.unsplashsearch.databinding.LayoutPhotoItemBinding
@@ -10,22 +19,38 @@ import com.example.unsplashsearch.model.Photo
 import com.example.unsplashsearch.recyclerview.PhotoGridRecyclerViewAdapter
 import com.example.unsplashsearch.utils.Constants
 
+
+
 private lateinit var binding: ActivityPhotoCollectionBinding
 
-class PhotoCollectionActivity:AppCompatActivity() {
+
+
+class PhotoCollectionActivity:AppCompatActivity(),SearchView.OnQueryTextListener,
+    androidx.appcompat.widget.SearchView.OnQueryTextListener {
     //데이터
     private var photoList=ArrayList<Photo>()
     //어답터
-    private val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {
-        PhotoGridRecyclerViewAdapter(photoList) //선언과 동시에 초기화
-    }
+    private  val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {
+        PhotoGridRecyclerViewAdapter(photoList,this) }//선언과 동시에 초기화
+
+    var viewModel=MainViewModel()
+    //searchview
+    private lateinit var mySearchView: androidx.appcompat.widget.SearchView
+    //searchviewEditText
+    private lateinit var mySearchViewEditText: EditText
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
         setContentView(binding.root)
         Log.d(Constants.TAG,"PhotoCollectionActivity - onCreate() called")
+
+        setSupportActionBar(binding.topAppBar)//탑 바 이벤트 선언
         getIntents()
         setRecyclerView()
+        setChangePhotoListObserve()
+
     }// end of onCreate()
 
     fun getIntents(){
@@ -45,7 +70,66 @@ class PhotoCollectionActivity:AppCompatActivity() {
             adapter=photoGridRecyclerViewAdapter
         }
     }
+    fun setChangePhotoListObserve(){
+        viewModel.photoList.observe(this, Observer {
+            photoList=it
+            photoGridRecyclerViewAdapter.notifyPhotoDataChange(photoList)//어뎁터클래스에 변경된 데이터를 보내주고 어뎀터클래스 함수 안에서 변경을 알림
+        })
+    }
 
+    //상단 메뉴바 사용을 위한  override 함수들
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.d(Constants.TAG,"PhotoCollectionActivity - onCreateOptionsMenu() called ")
+        //메뉴 xml을 inflater하고 top_app_bar_menu랑 연결시킴
+        val inflater=menuInflater
+        inflater.inflate(R.menu.top_app_bar_menu,menu)
 
+        val searchManager=getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        //menu안의 searchview가져온다
+        this.mySearchView= menu?.findItem(R.id.search_menu_item)?.actionView as androidx.appcompat.widget.SearchView
+        this.mySearchView.apply {
+            this.queryHint="검색어를 입력해 주세요"
+            this.setOnQueryTextListener(this@PhotoCollectionActivity)
+            this.setOnQueryTextFocusChangeListener{_, hasExpaned->
+                when(hasExpaned){
+                    true->{
+                        Log.d(Constants.TAG,"서치뷰 열림 ")
+                    }
+                    false->{
+                        Log.d(Constants.TAG,"서치뷰 닫힘 ")
+                    }
+                }
+            }
+            //searchviewEditText 가져오기
+            mySearchViewEditText=this.findViewById(androidx.appcompat.R.id.search_src_text)
+        }
+        this.mySearchViewEditText.apply {
+            this.filters= arrayOf(InputFilter.LengthFilter(12))//검색글자수 12 로 제한
+            this.setTextColor(Color.WHITE)
+            this.setHintTextColor(Color.WHITE)
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+    //탑바 서치뷰 검색버튼 클릭 이벤트
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        Log.d(Constants.TAG,"PhotoCollectionActivity - onQueryTextSubmit() called / query: ${query}")
+        if(!query.isNullOrEmpty()){//검색어가 있으면 탑바의 타이틀을 변경
+            binding.topAppBar.title=query
+            //api호출!!!!!
+            viewModel.getPhotoData(query)
+        }
+        binding.topAppBar.collapseActionView()//탑바에 액션뷰가 닫힘//키보드 사라짐
+        return true
+    }
+    //탑바 서치뷰 검색어 입력 이벤트
+    override fun onQueryTextChange(newText: String?): Boolean {
+        Log.d(Constants.TAG,"PhotoCollectionActivity - onQueryTextSubmit() called / newText: ${newText}")
+        val userInputText = newText?:""//입력된값이 없으면 ""을 넣겠다
+        if (userInputText.count()==12){
+            Toast.makeText(this,"12자까지 검색가능 합니다.",Toast.LENGTH_SHORT).show()
+            Log.d(Constants.TAG,"12자까지 검색가능 합니다.${userInputText.count()}")
+        }
+        return true
+    }
 
 }

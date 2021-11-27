@@ -1,23 +1,14 @@
 package com.example.unsplashsearch
 
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.Contacts
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.unsplashsearch.databinding.ActivityMainBinding
-import com.example.unsplashsearch.retrofit.RetrofitManager
 import com.example.unsplashsearch.utils.*
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.newTask
-import java.lang.Exception
 
 
 private lateinit var binding: ActivityMainBinding
@@ -39,9 +30,8 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         onBinding()//findViewByID는  setContentView()를해서 레이아웃이 존재할때만 리턴하기때문에 setContentView 아래 함수호출
         onListner()
-        onObserve()
+        setObserve()
         Log.d(Constants.TAG, "MainActivity-onCreate() called~!!@@")
-
     }//oncreate()
 
     private fun onBinding() {
@@ -115,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
     }//end of onListner()
 
-    fun onObserve(){
+    fun setObserve(){
         viewModel.photoList.observe(this, Observer {
             //PhotoCollectionActivity로 결과를 인텐트를 통해 전달 하기
             //번들에 responseDataArrayList를 넣고, 번들과 검색어를 미리 선언한 함수의 매개변수를 통해 새로운 액티비티 생성/Anko사용 코드라인수 감소
