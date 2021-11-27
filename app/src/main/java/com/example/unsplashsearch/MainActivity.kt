@@ -1,23 +1,14 @@
 package com.example.unsplashsearch
 
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.Contacts
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.unsplashsearch.databinding.ActivityMainBinding
-import com.example.unsplashsearch.retrofit.RetrofitManager
 import com.example.unsplashsearch.utils.*
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.newTask
-import java.lang.Exception
 
 
 private lateinit var binding: ActivityMainBinding

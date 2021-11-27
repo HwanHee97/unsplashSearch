@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import androidx.core.content.ContextCompat.startActivity
 import com.example.unsplashsearch.PhotoCollectionActivity
+import com.example.unsplashsearch.recyclerview.PhotoItemViewHolder
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 

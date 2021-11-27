@@ -57,6 +57,10 @@ class RetrofitManager {
                                     val user = resultItemObject.get("user").asJsonObject//사진정보중 user이란 jsonobject를 가져옴
                                     val username: String = user.get("username").asString
 
+                                    val links =resultItemObject.get("links").asJsonObject//링크라는 jsonobject를 가져옴
+                                    val downloadLink:String=links.get("html").asString
+
+
                                     val likesCount = resultItemObject.get("likes").asInt
                                     val thumbnailLink = resultItemObject.get("urls").asJsonObject.get("thumb").asString
                                     val createAt = resultItemObject.get("created_at").asString
@@ -71,7 +75,8 @@ class RetrofitManager {
                                         author = username,
                                         likesCount = likesCount,
                                         thumbnail = thumbnailLink,
-                                        createAt = outputDateString
+                                        createAt = outputDateString,
+                                        download_link = downloadLink
                                     )
                                     parsedPhotoDataArray.add(photoItem)
                                 }

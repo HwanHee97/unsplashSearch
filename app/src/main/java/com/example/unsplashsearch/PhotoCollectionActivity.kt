@@ -30,8 +30,9 @@ class PhotoCollectionActivity:AppCompatActivity(),SearchView.OnQueryTextListener
     //데이터
     private var photoList=ArrayList<Photo>()
     //어답터
-    private  val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {  PhotoGridRecyclerViewAdapter(photoList) }//선언과 동시에 초기화
-    //
+    private  val photoGridRecyclerViewAdapter : PhotoGridRecyclerViewAdapter by lazy {
+        PhotoGridRecyclerViewAdapter(photoList,this) }//선언과 동시에 초기화
+
     var viewModel=MainViewModel()
     //searchview
     private lateinit var mySearchView: androidx.appcompat.widget.SearchView
@@ -72,10 +73,11 @@ class PhotoCollectionActivity:AppCompatActivity(),SearchView.OnQueryTextListener
     fun setChangePhotoListObserve(){
         viewModel.photoList.observe(this, Observer {
             photoList=it
-            photoGridRecyclerViewAdapter.notifyPhotoDataChange(photoList)
+            photoGridRecyclerViewAdapter.notifyPhotoDataChange(photoList)//어뎁터클래스에 변경된 데이터를 보내주고 어뎀터클래스 함수 안에서 변경을 알림
         })
     }
 
+    //상단 메뉴바 사용을 위한  override 함수들
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         Log.d(Constants.TAG,"PhotoCollectionActivity - onCreateOptionsMenu() called ")
         //메뉴 xml을 inflater하고 top_app_bar_menu랑 연결시킴
