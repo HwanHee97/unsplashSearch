@@ -9,7 +9,10 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.example.unsplashsearch.App
 import com.example.unsplashsearch.DownloadWedViewActivity
 import com.example.unsplashsearch.PhotoCollectionActivity
@@ -34,9 +37,14 @@ class PhotoItemViewHolder(val binding:LayoutPhotoItemBinding, val context: Conte
     }
 
     fun loadPhotoImage(view: ImageView, imageUrl: String?,downloadUrl:String?) {
+        val options = RequestOptions()
+            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .signature(ObjectKey(System.currentTimeMillis()))
         Glide.with(App.instance)
             .load(imageUrl)//표시할 이미지 값(링크).
             .placeholder(R.drawable.ic_baseline_insert_photo_24)//이미지가 없으면 나오는 기본 화면
+            .apply(options)
             .into(view)//표시할 이미지 뷰
         view.setOnClickListener{
             //photocollectionactivity에서 다운로드 액티비티를 호출위해
